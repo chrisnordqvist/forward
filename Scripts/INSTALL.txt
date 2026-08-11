@@ -1,0 +1,52 @@
+Forward — installing on another Mac
+===================================
+
+Requirements: Apple silicon (M-series), macOS 14 or later.
+
+1. Unzip Forward.app and move it wherever you like (/Applications is typical).
+
+2. Clear the quarantine flag, then open it:
+
+       xattr -dr com.apple.quarantine /Applications/Forward.app
+       open /Applications/Forward.app
+
+   Step 2 is required. Forward is ad-hoc signed rather than notarized by Apple, so
+   macOS blocks it on first launch with "Forward is damaged and can't be opened"
+   or "cannot be opened because the developer cannot be verified". That message is
+   about the missing Apple notarization, not about the app being broken.
+
+   Whether the flag is set depends on how the app got there: AirDrop, email and
+   downloads set it; scp, rsync and most USB copies do not. Running the command is
+   harmless either way.
+
+   If you would rather not use the terminal: try to open the app, then go to
+   System Settings > Privacy & Security, scroll to Security, and click
+   "Open Anyway" next to the message about Forward.
+
+3. Forward is a menu bar app — it has no Dock icon and no window at startup.
+   Look for the arrows icon in the menu bar at the top right.
+
+Setting it up
+-------------
+
+Add a host and its port forwards from the menu bar icon > Settings, or edit
+~/.config/forward/config.json directly (the app picks up external edits live).
+
+The "SSH host" field is passed straight to ssh, so an alias from that machine's
+~/.ssh/config works as-is, along with its ProxyJump, keys and known_hosts.
+
+Authentication
+--------------
+
+Forward runs without a terminal, so it cannot answer a password or passphrase
+prompt. It needs key-based auth: either keys with no passphrase, or keys loaded
+into ssh-agent on that machine.
+
+When something needs a human — accepting a host key the first time, or unlocking
+a key — right-click a host and choose "Open in Terminal". That runs the same ssh
+command interactively so you can deal with the prompt once.
+
+Uninstalling
+------------
+
+Delete Forward.app, then remove ~/.config/forward and ~/.local/state/forward.
